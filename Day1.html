@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advent of Code</title>
+    <style>
+        body {
+            background-color: #59a759; /* Green background color */
+        }
+
+        h1 {
+            color: #9e2020; /* White text color */
+            font-size: 60px;
+            position: absolute;
+            top: 5%; /* Move the title to the middle of the body */
+            left: 50%; /* Move the title to the center horizontally */
+            transform: translate(-50%, -50%); /* Center the title precisely */
+            margin: 0; /* Remove default margin */
+        }
+        h2 {
+            color: #9e2020; /* White text color */
+            font-size: 40px;
+            position: absolute;
+            top: 15%; /* Move the title to the middle of the body */
+            left: 50%; /* Move the title to the center horizontally */
+            transform: translate(-50%, -50%); /* Center the title precisely */
+            margin: 0; /* Remove default margin */
+        }
+        
+        box {
+            border: 5px solid rgb(2, 59, 19);
+            padding: 10px;
+            background-color: #9e2020;
+            position: absolute;
+            top: 200px; /* Move the title to the middle of the body */
+            left: 50px; /* Move the title to the center horizontally */
+            height: 500px;
+            width: 200px;
+            border-radius: 20px; 
+
+        }
+        #lineContainer {
+            color: #ffffff; /* White text color */
+            font-size: 10px;
+            padding-top: 10px;
+            overflow: hidden;
+        }
+
+        .line {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+
+
+<body>
+    <h1>Advent of Code 2023</h1>
+    <h2>Day 1</h2>
+    
+    
+    <box>
+        <input type="file" id="fileInput" />
+        <div id="lineContainer"></div></box>
+
+    <script>
+        document.getElementById('fileInput').addEventListener('change', function (event) {
+            const fileInput = event.target;
+            const file = fileInput.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const fileContent = e.target.result;
+                    const lines = fileContent.split('\n')
+                    displayLines(lines);
+                };
+
+                reader.readAsText(file);
+            } else {
+                alert('Please select a file.');
+            }
+        });
+
+        function displayLines(fileContent){
+            var speed = 1000;
+            var counter=1000;
+            const length_lines = fileContent.length;
+            var line_counter = 0;
+            var myFunction = function(){
+            
+                write_lines(fileContent,line_counter);
+                line_counter++;
+                console.log(line_counter,length_lines);
+                if(line_counter===5){
+                    counter = 10;
+                }
+                if(line_counter != length_lines){
+                    setTimeout(myFunction,counter);
+                }
+                
+            }
+        setTimeout(myFunction, counter);
+        }
+/*
+        function displayLines(fileContent){
+            var speed = 1000
+            const length_lines = fileContent.length
+            var line_counter = 0
+            dataloop = setInterval(function () {
+                write_lines(fileContent,line_counter);
+                line_counter++
+                console.log(line_counter,length_lines)
+                if(line_counter===5){
+                    speed = 10;
+                }
+                if(line_counter===length_lines){
+                    setInterval(dataloop);
+                }
+            }, speed);
+        }
+*/
+        function write_lines(fileContent,line_counter) {
+            const length_lines = fileContent.length
+            //console.log(fileContent)
+            //console.log(length_lines)
+            const lineContainer = document.getElementById('lineContainer');
+
+            lineContainer.innerHTML = ''; // Clear previous content
+            console.log(line_counter)
+            const lines = fileContent.slice(line_counter, line_counter + 20);
+            console.log(lines)
+            lines.forEach(function (line) {
+                const lineElement = document.createElement('div');
+                lineElement.classList.add('line');
+                lineElement.textContent = line;
+                lineContainer.appendChild(lineElement);
+            
+            });
+            
+      
+            
+        }
+
+        function getNextLine(fileContent, currentIndex) {
+            const allLines = fileContent.split('\n');
+            const nextIndex = currentIndex % allLines.length;
+            return allLines[nextIndex];
+        }
+    </script>
+    
+</body>
+</html>

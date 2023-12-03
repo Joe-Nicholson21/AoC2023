@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advent of Code</title>
+    <style>
+        body {
+            background-color: #59a759; /* Green background color */
+            margin: 0; /* Remove default margin */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; /* Make the body take the full height of the viewport */
+            overflow: hidden; /* Hide overflowing snowflakes */
+        }
+        .box-container {
+            display: grid;
+            grid-template-columns: repeat(5,1fr);
+            gap: 5px; /* Add gap between boxes */
+        }
+
+        .box {
+            width: 80px;
+            height: 80px;
+            background-color: #c02b20; /* Blue box color */
+            transition: transform 0.3s ease-in-out; /* Add transition for smooth rotation */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            color: #fff;
+            margin: 5px;
+            border-radius: 10px;  
+        }
+
+        .box:hover {
+            animation: spin 1s linear infinite; /* Rotate the box 90 degrees on hover */
+        }
+        .box.grey {
+            background-color: #888;
+        }
+        
+        
+        /* Snowflake animation */
+        .snowflake {
+            position: absolute;
+            background: #fff; /* White color for snowflakes */
+            border-radius: 50%;
+            animation: snowfall linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes snowfall {
+            from {
+                transform: translateY(-100vh); /* Start above the viewport */
+            }
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        h1 {
+            color: #9e2020; /* White text color */
+            font-size: 60px;
+            position: absolute;
+            top: 5%; /* Move the title to the middle of the body */
+            left: 50%; /* Move the title to the center horizontally */
+            transform: translate(-50%, -50%); /* Center the title precisely */
+            margin: 0; /* Remove default margin */
+        }
+    </style>
+</head>
+
+
+
+<body>
+    <h1>Advent of Code 2023</h1>
+
+    <div class="box-container" id="boxContainer"></div>
+
+    <script>
+        // Create 25 boxes dynamically using JavaScript
+        document.addEventListener('DOMContentLoaded', function () {
+            const boxContainer = document.getElementById('boxContainer');
+
+        const numSnowflakes = 50;
+        for (let i = 0; i < numSnowflakes; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                snowflake.style.width = `${Math.random() * 5 + 5}px`; /* Random size */
+                snowflake.style.height = snowflake.style.width;
+                snowflake.style.left = `${Math.random() * 100}vw`; /* Random horizontal position */
+                snowflake.style.top = `${Math.random() * 100}vh`; /* Random horizontal position */
+                snowflake.style.animationDuration = `${Math.random() * 2 + 2}s`; /* Random speed */
+                boxContainer.appendChild(snowflake);
+            }
+
+            for (let i = 1; i < 26; i++) {
+                const box = document.createElement('div');
+                box.classList.add('box');
+                box.textContent = i;
+                if (i > 3){
+                    box.classList.add('grey');
+                }
+
+                 // Add click event listener to navigate to new pages
+                box.addEventListener('click', function () {
+                    // Navigate to a new page based on the box number
+                    window.location.href = `Day${i}.html`;
+                });
+                boxContainer.appendChild(box);
+            }
+        
+
+
+        });
+    </script>
+</body>
+</html>
