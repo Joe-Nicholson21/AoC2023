@@ -43,8 +43,45 @@
         #lineContainer {
             color: #ffffff; /* White text color */
             font-size: 10px;
-            padding-top: 10px;
+            padding-top: 30px;
             overflow: hidden;
+        }
+        .animationBox {
+      
+            font-size: 16px;
+            padding-left: 15px;
+            color: #ffffff; /* White text color */
+            position: absolute;
+            top: 240px; /* Move the title to the middle of the body */
+            left: 50px; /* Move the title to the center horizontally */
+            height: 30px;
+            width: 210px;
+            animation: bounce 3s linear forwards;
+            animation-iteration-count: 1;
+            overflow: hidden;
+
+           
+        }
+/*
+        .animationBox:move {
+            animation: spin 1s linear infinite;  //Rotate the box 90 degrees on hover 
+        }*/
+        @keyframes bounce {
+        0% { left: 50px; transform: scale(1); }
+        50%{ left: 50px;transform: scale(1); }
+        100% { left: calc( 40% ); transform: scale(2);overflow: visible;}
+        
+        }
+        .animationBox.active {
+        left: calc(50vw );
+        transition: left 5s linear
+        }
+        .animationBox.reset {
+            top: 240px; /* Move the title to the middle of the body */
+            left: 50px; /* Move the title to the center horizontally */
+            height: 30px;
+            width: 210px;
+            transition:left 0s linear;
         }
 
         .line {
@@ -60,12 +97,19 @@
     <h1>Advent of Code 2023</h1>
     <h2>Day 1</h2>
     
-    
+
     <box>
         <input type="file" id="fileInput" />
         <div id="lineContainer"></div></box>
+    
+    <div class="animationBox"></div>
+        
+
+   
 
     <script>
+        const animationBox = document.querySelector('.animationBox');
+        
         document.getElementById('fileInput').addEventListener('change', function (event) {
             const fileInput = event.target;
             const file = fileInput.files[0];
@@ -85,71 +129,72 @@
             }
         });
 
-        function displayLines(fileContent){
-            var speed = 1000;
-            var counter=1000;
-            const length_lines = fileContent.length;
-            var line_counter = 0;
-            var myFunction = function(){
-            
-                write_lines(fileContent,line_counter);
-                line_counter++;
-                console.log(line_counter,length_lines);
-                if(line_counter===5){
-                    counter = 10;
-                }
-                if(line_counter != length_lines){
-                    setTimeout(myFunction,counter);
-                }
+        function displayLines(fileContent) {
+    var speed = 1000;
+    var counter = 1000;
+    const length_lines = fileContent.length;
+    var line_counter = 0;
+
+        function writeLinesWithTransition(line) {
+            return new Promise(resolve => {
+                write_lines(fileContent, line);
+                animationBox.addEventListener('animationend', () => {
+                    console.log("Transition ended");
+                    resolve();
+                }, { once: true });
+                
+            });
+        }
+
+        function processLine() {
+            if (line_counter < length_lines) {
+                console.log(line_counter, length_lines);
+                writeLinesWithTransition(line_counter)
+                    .then(() => {
+                        line_counter++;
+                        if (line_counter === 5) {
+                            counter = 1000; // Adjust as needed
+                        }
+                        return new Promise(resolve => setTimeout(resolve, counter));
+                    })
+                    .then(processLine);
+            }
+        }
+
+        setTimeout(processLine, counter);
+    }
+
+    function write_lines(fileContent, line_counter) {
+        const length_lines = fileContent.length
+        //console.log(fileContent)
+        //console.log(length_lines)
+        const lineContainer = document.getElementById('lineContainer');
+
+        lineContainer.innerHTML = ''; // Clear previous content
+        console.log(line_counter)
+        const lines = fileContent.slice(line_counter, line_counter + 20);
+        console.log(lines)
+        lines.forEach(function (line, index) {
+        
+            if (index === 0) {
+                animationBox.textContent = line;
+                console.log("test")
+                animationBox.style.animation = 'none';
+                animationBox.offsetHeight; /* trigger reflow */
+                animationBox.style.animation = null; 
                 
             }
-        setTimeout(myFunction, counter);
-        }
-/*
-        function displayLines(fileContent){
-            var speed = 1000
-            const length_lines = fileContent.length
-            var line_counter = 0
-            dataloop = setInterval(function () {
-                write_lines(fileContent,line_counter);
-                line_counter++
-                console.log(line_counter,length_lines)
-                if(line_counter===5){
-                    speed = 10;
-                }
-                if(line_counter===length_lines){
-                    setInterval(dataloop);
-                }
-            }, speed);
-        }
-*/
-        function write_lines(fileContent,line_counter) {
-            const length_lines = fileContent.length
-            //console.log(fileContent)
-            //console.log(length_lines)
-            const lineContainer = document.getElementById('lineContainer');
-
-            lineContainer.innerHTML = ''; // Clear previous content
-            console.log(line_counter)
-            const lines = fileContent.slice(line_counter, line_counter + 20);
-            console.log(lines)
-            lines.forEach(function (line) {
+            else {
                 const lineElement = document.createElement('div');
                 lineElement.classList.add('line');
                 lineElement.textContent = line;
                 lineContainer.appendChild(lineElement);
-            
-            });
-            
-      
-            
-        }
+            }
 
-        function getNextLine(fileContent, currentIndex) {
-            const allLines = fileContent.split('\n');
-            const nextIndex = currentIndex % allLines.length;
-            return allLines[nextIndex];
-        }
+        });
+
+    }
+
     </script>
     
 </body>
